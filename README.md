@@ -1,2 +1,0 @@
-# simranAsteroids
-asteroids video game

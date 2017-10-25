@@ -1,0 +1,23 @@
+{
+  "name": "asteroid",
+  "version": "1.0.0",
+  "description": "The Asteroid Package",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smalhi5/simranAsteroids.git"
+  },
+  "author": "Simran Malhi",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/smalhi5/simranAsteroids/issues"
+  },
+  "homepage": "https://github.com/smalhi5/simranAsteroids#readme",
+  "dependencies": {
+    "react-scripts": "^1.0.14"
+  }
+}
