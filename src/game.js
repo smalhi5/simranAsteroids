@@ -1,5 +1,3 @@
-// game.js
-
 import ship from './ship';
 import asteroid from './asteroid';
 import bullet from './bullet';
@@ -72,20 +70,12 @@ export default class Game {
 
   }
 
-  /** @function gameOver
-    * Displays a game over message using the DOM
-  */
-
   gameOver() {
     var message = document.getElementById("message");
     message.innerText = "Game Over";
     this.over = true;
   }
 
-  /** @method handleKeyDown
-    * register when a key is pressed and change
-    * our input object.
-    */
   handleKeyDown(event) {
     event.preventDefault();
     switch(event.key){
@@ -107,63 +97,52 @@ export default class Game {
         break;
     }
   }
-  /** @method update
-    * Updates the game world.
-    */
+
   update() {
 
-    this.ship.update(this.input, false, false);
+    this.ship.update(this.input, false);
 
     if(this.asteroids.length > 0){
-      for(this.l = 0; this.l < this.asteroids.length; this.l++){
-        this.asteroids[this.l].update(false);
+      for(var l = 0; l < this.asteroids.length; l++){
+        this.asteroids[l].update();
       }
     }
 
     if(this.bullets.length > 0){
-      for(this.k = 0; this.k < this.bullets.length; this.k++){
-        this.bullets[this.k].update();
+      for(var k = 0; k < this.bullets.length; k++){
+        this.bullets[k].update();
       }
     }
 
     if(this.bullets.length > 0){
-      for(this.d = 0; this.d < this.bullets.length; this.d++){
-        if(this.bullets[this.d].getX() > 970){
-          this.bullets.splice(this.d,1);
+      for(var d = 0; d < this.bullets.length; d++){
+        if(this.bullets[d].getX() > 970){
+          this.bullets.splice(d,1);
         }
       }
     }
 
     //checking bullet to asteroid collision
-    for( this.i = 0; this.i < this.asteroids.length; this.i++){
-      if(this.bullets.length > 0){
-        for(this.s = 0; this.s < this.bullets.length; this.s++){
+    if(this.bullets.length > 0 && this.asteroids.length > 0){
+      for( var i = 0; i < this.asteroids.length; i++){
+        for(var s = 0; s < this.bullets.length; s++){
           this.distanceSquared =
-                    Math.pow(this.asteroids[this.i].getX() - this.bullets[this.s].getX(), 2) +
-                    Math.pow(this.asteroids[this.i].getY() - this.bullets[this.s].getY(), 2);
-          if(this.distanceSquared < Math.pow(this.asteroids[this.i].getRadius() + this.bullets[this.s].getRadius(), 2)){
-            if(this.asteroids[this.i].getRadius() == 20){
+                    Math.pow(this.asteroids[i].getX() - this.bullets[s].getX(), 2) +
+                    Math.pow(this.asteroids[i].getY() - this.bullets[s].getY(), 2);
+          if(this.distanceSquared < Math.pow(this.asteroids[i].getRadius() + this.bullets[s].getRadius(), 2)){
+            if(this.asteroids[i].getArea() >= 100){
               this.score.update();
-              this.x = this.asteroids[this.i].getX();
-              this.y = this.asteroids[this.i].getY();
-              this.asteroids.push(new asteroid(this.x,this.y,15,7,7));
-              this.asteroids.push(new asteroid(this.x,this.y,15,7,-7));
-              this.asteroids.splice(this.i, 1);
-              this.bullets.splice(this.s, 1);
+              this.x = this.asteroids[i].getX();
+              this.y = this.asteroids[i].getY();
+              this.asteroids.push(new asteroid(this.x*75,this.y*75,asteroids[i].getRadius()*75,asteroids[i].getSpeedX()*2,asteroids[i].getSpeedY()/2));
+              this.asteroids.push(new asteroid(this.x*25,this.y*25,asteroids[i].getRadius()*75,asteroids[i].getSpeedX()/2,asteroids[i].getSpeedY()*2));
+              this.asteroids.splice(i, 1);
+              this.bullets.splice(s, 1);
             }
-            if(this.asteroids[this.i].getRadius() == 15){
+            else{
               this.score.update();
-              this.x = this.asteroids[this.i].getX();
-              this.y = this.asteroids[this.i].getY();
-              this.asteroids.push(new asteroid(this.x,this.y,10,10,10));
-              this.asteroids.push(new asteroid(this.x,this.y,10,10,-10));
-              this.asteroids.splice(this.i, 1);
-              this.bullets.splice(this.s, 1);
-            }
-            if(this.asteroids[this.i].getRadius() == 10){
-              this.score.update();
-              this.asteroids.splice(this.i, 1);
-              this.bullets.splice(this.s, 1);
+              this.asteroids.splice(i, 1);
+              this.bullets.splice(s, 1);
             }
           }
         }
@@ -171,46 +150,50 @@ export default class Game {
     }//end of bullet to asteroid collision
 
     //asteroid to ship collision 
-    for(this.h = 0; this.h < this.asteroids.length; this.h++){
-      this.ast = this.asteroids[this.h];
-      /*
-      this.rx = Math.clamp(this.ast.getX(), this.ship.getX(), this.ship.getX() + 25);
-      this.ry = Math.clamp(this.ast.getY(), this.ship.getY(), this.ship.getY() + 10);
-      this.distSquared =
-          Math.pow(this.rx - this.ast.getX(), 2) +
-          Math.pow(this.ry - this.ast.getY(), 2);
-      if(this.distSquared < Math.pow(this.ast.getRadius(), 2))
-      */
+    for(var h = 0; h < this.asteroids.length; h++){
+      this.ast = this.asteroids[h];
       this.distSquared =
                     Math.pow(this.ast.getX() - this.ship.getX(), 2) +
                     Math.pow(this.ast.getY() - this.ship.getY(), 2);
       if(this.distSquared < Math.pow(this.ast.getRadius()))
       {
         this.lives.update();
-        this.ship.update(this.input, false, true);
+        this.ship.collid();
       }
     }
 
     //asteroid to asteroid collision
-    for(this.m = 0; this.m < this.asteroids.length-1; this.m++){
-      for(this.n = this.m+1; this.n < this.asteroids.length; this.n++){
-        this.a1 = this.asteroids[this.m];
-        this.a2 = this.asteroids[this.n];
-        this.distanceSqu =
-                    Math.pow(this.asteroids[this.m].getX() - this.asteroids[this.n].getX(), 2) +
-                    Math.pow(this.asteroids[this.m].getY() - this.asteroids[this.n].getY(), 2);
-        if(this.distanceSqu < Math.pow(this.asteroids[this.m].getRadius() + this.asteroids[this.n].getRadius(), 2)){
-          this.asteroids[this.m].update(true);
-          this.asteroids[this.n].update(true);
+    if(asteroids.length > 0){
+      for(var m = 0; m < this.asteroids.length-1; m++){
+        for(var n = this.m+1; n < this.asteroids.length; n++){
+          this.a1 = this.asteroids[m];
+          this.a2 = this.asteroids[n];
+          this.distanceSqu =
+                    Math.pow(this.asteroids[m].getX() - this.asteroids[n].getX(), 2) +
+                    Math.pow(this.asteroids[m].getY() - this.asteroids[n].getY(), 2);
+          if(this.distanceSqu < Math.pow(this.asteroids[m].getRadius() + this.asteroids[n].getRadius(), 2))
+          {
+            var v1 = Math.sqrt(Math.pow(asteroids[m].getSpeedX(), 2)+Math.pow(asteroids[m].getSpeedY(), 2));
+            var v2 = Math.sqrt(Math.pow(asteroids[n].getSpeedX(), 2)+Math.pow(asteroids[n].getSpeedY(), 2));
+
+            var theta1 = Math.acos(asteroids[m].getSpeedX()/v1);
+            var theta2 = Math.acos(asteroids[n].getSpeedX()/v2);
+
+            var phi = Math.atan(Math.abs(asteroids[n].getY() - asteroids[m].getX()) / Math.abs(asteroids[n].getX() - asteroids[m].getX()));
+    
+            var x1 = (((v1 * Math.cos(theta1 - phi) * (asteroid1.mass - asteroid2.mass))+(2 * asteroid2.mass * v2 * Math.cos(theta2 - phi)))/(asteroid1.mass + asteroid2.mass)) * Math.cos(phi) + v1 * Math.sin(theta1 - phi) * Math.cos(phi + (Math.PI/2));
+            var y1 = (((v1 * Math.cos(theta1 - phi) * (asteroid1.mass - asteroid2.mass))+(2 * asteroid2.mass * v2 * Math.cos(theta2 - phi)))/(asteroid1.mass + asteroid2.mass)) * Math.sin(phi) + v1 * Math.sin(theta1 - phi) * Math.sin(phi + (Math.PI/2));
+    
+            var x2 = (((v2 * Math.cos(theta2 - phi) * (asteroid2.mass - asteroid1.mass))+(2 * asteroid1.mass * v1 * Math.cos(theta1 - phi)))/(asteroid2.mass + asteroid1.mass)) * Math.cos(phi) + v2 * Math.sin(theta2 - phi) * Math.cos(phi + (Math.PI/2));
+            var y2 = (((v2 * Math.cos(theta2 - phi) * (asteroid2.mass - asteroid1.mass))+(2 * asteroid1.mass * v1 * Math.cos(theta1 - phi)))/(asteroid2.mass + asteroid1.mass)) * Math.sin(phi) + v2 * Math.sin(theta2 - phi) * Math.sin(phi + (Math.PI/2));
+        
+            asteroids[m].setPos(x1,y1);
+            asteroids[n].setPos(x2,y2);
+          }
         }
       }
     }
-    
   }
-
-  /** @method render
-    * Renders the game world
-    */
 
   render() {
     this.backBufferContext.fillStyle = '#000';

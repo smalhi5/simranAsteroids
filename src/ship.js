@@ -8,7 +8,7 @@ export default class Ship
     this.shipWidth = 25;
   }
 
-  update(input, gameOver, collid) 
+  update(input, gameOver) 
   {
 
     switch(input.direction) 
@@ -39,11 +39,6 @@ export default class Ship
     if(this.y > 640){
       this.y = 0;
     }
-
-    if(collid == true){
-      this.x = 20;
-      this.y = 320;
-    }
   }
 
   render(ctx) 
@@ -61,6 +56,11 @@ export default class Ship
 
   getY(){
     return this.y  
+  }
+
+  collid(){
+    this.x = screenWidth / 2;
+    this.y = 100;
   }
 }
 

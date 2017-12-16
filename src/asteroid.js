@@ -7,39 +7,9 @@ export default class Asteroid{
     this.radius = radius;
     this.speedX = speedX;
     this.speedY = speedY;
-
-    /*
-    var dist = Math.random() * 10;
-    this.path = [{x: x, y: y}];
-
-    function clampHeight(y) {
-      do {
-        var newHeight = y;
-        // Calculate a random height
-        var probability = Math.random();
-        if(probability < 0.30) { // 30% chance
-          newHeight -= Math.random() * 50;
-        }
-        else if (probability < 0.60) { // 30% chance
-          newHeight += Math.random() * 50;
-        }
-      } while(newHeight < screenHeight/2 || newHeight > screenHeight-10);
-      return newHeight;
-    }
-
-    while (x < screenWidth) {
-      // Move x by a random distance
-      x = x + Math.random() * 15;
-      // Set y to a new randomized clamped value
-      y = clampHeight(y);
-      // Push endpoint to our array
-      this.path.push({x: x, y: y});
-    }
-    */
-
   }
 
-  update(collid){
+  update(){
 
     this.x-=this.speedX;
     this.y-=this.speedY;
@@ -55,36 +25,6 @@ export default class Asteroid{
     }
     if(this.y > 640){
       this.y = 0;
-    }
-
-    if(collid = true){
-      if(this.radius == 20){
-        if(this.speedY > 0){
-          this.speedY = -4;
-        }
-        if(this.speedY < 0){
-          this.speedY = 4;
-        }
-        if(this.speedY == 0){
-          this.speedY = 4;
-        }
-      }
-      if(this.radius == 15){
-        if(this.speedY > 0){
-          this.speedY = -7;
-        }
-        if(this.speedY < 0){
-          this.speedY = 7;
-        }
-      }
-      if(this.radius == 10){
-        if(this.speedY > 0){
-          this.speedY = -10;
-        }
-        if(this.speedY < 0){
-          this.speedY = 10;
-        }
-      }
     }
   }
 
@@ -108,18 +48,16 @@ export default class Asteroid{
     return this.speedY;
   }
 
+  getArea(){
+    return Math.pow(this.radius,2)*Math.PI;
+  }
+
+  setPos(x,y){
+    this.x = x;
+    this.y = y;
+  }
+  
   render(ctx) {
-    /*
-    ctx.save();
-    ctx.strokeStyle = "#fff";
-    ctx.beginPath();
-    ctx.moveTo(this.path[0].x, this.path[0].y);
-    for(var i = 1; i < this.path.length; i++) {
-      ctx.lineTo(this.path[i].x, this.path[i].y);
-    }
-    ctx.stroke();
-    ctx.restore();
-    */
     ctx.strokeStyle = "#0f0";
     ctx.beginPath();
     ctx.arc(this.x,this.y,this.radius,0,2*Math.PI);
